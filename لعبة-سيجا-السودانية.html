@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102522">
+  <meta name="author" content="م. عباس الجبارة عباس — أرإكس كمبيوتر تكنولوجي">
+  <meta name="description" content="السيجة السودانية: لعبة تراثية بواجهة عصرية تعمل دون اتصال على الهاتف والكمبيوتر.">
+  <title>السيجة السودانية | لعبة تراثية</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f8f2e7;
+      --muted: #c5d0c6;
+      --night: #102522;
+      --panel: #18332e;
+      --panel-light: #214039;
+      --green: #159447;
+      --red: #d84c3f;
+      --gold: #e8bc66;
+      --sand: #eddfbd;
+      --blue: #70c4e7;
+      --line: rgba(248, 242, 231, .16);
+      --shadow: 0 24px 70px rgba(0, 0, 0, .24);
+      font-family: Tahoma, "Noto Naskh Arabic", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 12% 9%, rgba(21, 148, 71, .18), transparent 34rem),
+        radial-gradient(ellipse at 93% 70%, rgba(216, 76, 63, .13), transparent 30rem),
+        var(--night);
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      padding: 28px 24px 20px;
+    }
+
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-height: 150px;
+      margin-bottom: 22px;
+      padding: 25px 30px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(110deg, rgba(21, 148, 71, .23), transparent 43%),
+        linear-gradient(285deg, rgba(216, 76, 63, .17), transparent 38%),
+        var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 7px;
+      content: "";
+      background: linear-gradient(to bottom, var(--red) 0 25%, var(--ink) 25% 50%, #171a18 50% 75%, var(--green) 75%);
+    }
+
+    .seal {
+      display: grid;
+      flex: 0 0 74px;
+      width: 74px;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid rgba(232, 188, 102, .55);
+      border-radius: 50%;
+      color: var(--gold);
+      background:
+        radial-gradient(circle, rgba(232, 188, 102, .12) 0 36%, transparent 37%),
+        repeating-conic-gradient(from 0deg, rgba(232, 188, 102, .42) 0 2deg, transparent 2deg 15deg);
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.3;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      align-items: start;
+      gap: 22px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(24, 51, 46, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .play-panel { padding: 22px; }
+
+    .turn-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 54px;
+      margin-bottom: 16px;
+      padding: 11px 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .12);
+    }
+
+    .turn-label {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .phase-tag {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #1c2119;
+      background: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .scores {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .score-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .score-card.active { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+    .score-dot {
+      flex: 0 0 14px;
+      width: 14px;
+      aspect-ratio: 1;
+      border: 2px solid rgba(255, 255, 255, .8);
+      border-radius: 50%;
+    }
+
+    .score-dot.blue { background: var(--blue); }
+    .score-dot.gold { background: var(--gold); }
+    .score-name { display: block; font-size: 13px; font-weight: 800; }
+    .score-detail { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+    .board-frame {
+      width: min(100%, 560px);
+      margin-inline: auto;
+      padding: clamp(9px, 2.5vw, 18px);
+      border: 1px solid rgba(232, 188, 102, .5);
+      border-radius: 19px;
+      background:
+        linear-gradient(135deg, rgba(232, 188, 102, .08), transparent 45%),
+        #1a302b;
+      box-shadow: inset 0 0 0 5px rgba(0, 0, 0, .12);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      width: 100%;
+      gap: clamp(3px, 1vw, 7px);
+      aspect-ratio: 1;
+      padding: 5px;
+      border: 1px solid rgba(232, 188, 102, .42);
+      border-radius: 13px;
+      background:
+        linear-gradient(rgba(232, 188, 102, .10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232, 188, 102, .10) 1px, transparent 1px),
+        #263c35;
+      background-size: 14.285% 14.285%;
+    }
+
+    .square {
+      display: grid;
+      min-width: 0;
+      min-height: 0;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(237, 223, 189, .16);
+      border-radius: 10px;
+      background: rgba(237, 223, 189, .055);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .square:not(:disabled):hover { background: rgba(237, 223, 189, .16); }
+    .square:focus-visible, .action:focus-visible, .text-button:focus-visible, .dialog-close:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+    }
+
+    .square.selected { border-color: var(--gold); background: rgba(232, 188, 102, .18); }
+    .square.legal { border-color: rgba(112, 196, 231, .85); background: rgba(112, 196, 231, .12); }
+
+    .piece {
+      display: block;
+      width: 70%;
+      aspect-ratio: 1;
+      border: 2px solid rgba(255, 255, 255, .82);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 3px rgba(0, 0, 0, .14), 0 2px 6px rgba(0, 0, 0, .25);
+    }
+
+    .piece.blue {
+      background: radial-gradient(circle at 34% 29%, #c4eeff 0 8%, #70c4e7 17% 56%, #2880a3 100%);
+    }
+
+    .piece.gold {
+      background: radial-gradient(circle at 34% 29%, #fff2bd 0 8%, #e8bc66 17% 56%, #b8842e 100%);
+    }
+
+    .square.center {
+      border: 1px solid rgba(232, 188, 102, .68);
+      background: repeating-conic-gradient(#2c4239 0 25%, #37493d 0 50%) 50% / 12px 12px;
+      cursor: default;
+    }
+
+    .center-mark {
+      color: var(--gold);
+      font-size: clamp(8px, 1.7vw, 13px);
+      font-weight: 900;
+    }
+
+    .board-note {
+      margin: 11px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .action, .text-button, .dialog-close {
+      min-height: 42px;
+      padding: 9px 15px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: var(--panel-light);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      touch-action: manipulation;
+    }
+
+    .action.primary { border-color: transparent; color: #15241d; background: var(--gold); }
+    .action:disabled { opacity: .45; cursor: not-allowed; }
+
+    .side-panel { padding: 21px; }
+    .side-panel h2 { margin: 0 0 13px; font-size: 17px; }
+    .side-panel > p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
+
+    .rule-list {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rule-list li {
+      display: grid;
+      grid-template-columns: 27px 1fr;
+      align-items: start;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .rule-number {
+      display: grid;
+      width: 26px;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid rgba(232, 188, 102, .4);
+      border-radius: 50%;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .heritage-note {
+      margin-top: 19px;
+      padding: 12px;
+      border-right: 3px solid var(--green);
+      border-radius: 7px;
+      color: #e5e9d8;
+      background: rgba(21, 148, 71, .09);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .mobile-rules { display: none; }
+
+    footer {
+      padding: 22px 8px 4px;
+      color: #aab8ad;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .credits {
+      margin: 7px 0 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    dialog {
+      width: min(440px, calc(100% - 28px));
+      padding: 24px;
+      border: 1px solid rgba(232, 188, 102, .45);
+      border-radius: 18px;
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    dialog::backdrop { background: rgba(3, 12, 10, .72); backdrop-filter: blur(4px); }
+    dialog h2 { margin: 0 0 10px; color: var(--gold); font-size: 20px; }
+    dialog p, dialog li { color: var(--muted); font-size: 13px; line-height: 1.9; }
+    dialog ul { padding-inline-start: 22px; }
+    .dialog-close { margin-top: 7px; }
+
+    @media (max-width: 800px) {
+      .page { padding: 16px 14px 14px; }
+      .layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .play-panel { padding: 15px; }
+      .side-panel { display: none; }
+      .mobile-rules { display: inline-flex; }
+      .hero { min-height: 125px; margin-bottom: 14px; padding: 19px; border-radius: 19px; }
+      .seal { flex-basis: 60px; width: 60px; font-size: 26px; }
+      .hero-copy { font-size: 12px; }
+    }
+
+    @media (max-width: 420px) {
+      .hero { gap: 13px; padding: 17px 15px; }
+      .seal { flex-basis: 50px; width: 50px; font-size: 22px; }
+      .eyebrow { font-size: 10px; }
+      .hero-copy { font-size: 11px; }
+      .play-panel { padding: 11px; border-radius: 17px; }
+      .turn-bar { padding: 9px 10px; }
+      .turn-label { font-size: 13px; }
+      .score-card { gap: 7px; padding: 9px 7px; }
+      .score-name { font-size: 11px; }
+      .score-detail { font-size: 10px; }
+      .square { border-radius: 7px; }
+      .board-frame { padding: 8px; }
+      .action { min-height: 40px; padding-inline: 11px; font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .square, .action { transition: background-color .15s ease, transform .15s ease; }
+      .action:not(:disabled):active { transform: scale(.97); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="seal" aria-hidden="true">س</div>
+      <div>
+        <p class="eyebrow">حكاية سودانية • ذكاء ومناورة</p>
+        <h1>السيجة السودانية</h1>
+        <p class="hero-copy">لعبة تراثية بروح عصرية — اجمع أهلك وأصدقاءك حول الرقعة، وابدأ جولة من التخطيط والتحدي.</p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel play-panel" aria-label="لوحة لعبة السيجة">
+        <div class="turn-bar">
+          <p class="turn-label" id="status" role="status" aria-live="polite"></p>
+          <span class="phase-tag" id="phase"></span>
+        </div>
+
+        <div class="scores" aria-label="النتيجة">
+          <div class="score-card" id="score-1">
+            <span class="score-dot blue" aria-hidden="true"></span>
+            <span><span class="score-name">الفريق النيلي</span><span class="score-detail" id="detail-1"></span></span>
+          </div>
+          <div class="score-card" id="score-2">
+            <span class="score-dot gold" aria-hidden="true"></span>
+            <span><span class="score-name">الفريق الذهبي</span><span class="score-detail" id="detail-2"></span></span>
+          </div>
+        </div>
+
+        <div class="board-frame">
+          <div class="board" id="board" role="group" aria-label="رقعة السيجة، سبعة صفوف وسبعة أعمدة"></div>
+        </div>
+        <p class="board-note" id="board-note">اختر خانة فارغة لوضع الحجر — يتبادل الفريقان وضع حجرين في كل دور.</p>
+
+        <div class="actions">
+          <button class="action primary" id="new-game" type="button">جولة جديدة</button>
+          <button class="action" id="undo" type="button">تراجع</button>
+          <button class="action mobile-rules" id="show-rules" type="button">طريقة اللعب</button>
+        </div>
+      </section>
+
+      <aside class="panel side-panel" aria-labelledby="rules-title">
+        <h2 id="rules-title">كيف تلعبون؟</h2>
+        <p>السيجة لعبة تخطيط ومناورة للاعبين على جهاز واحد. العبوا بالتناوب وحاولوا إحاطة أحجار الفريق الآخر.</p>
+        <ol class="rule-list">
+          <li><span class="rule-number">١</span><span>يبدأ الفريق النيلي، ويضع كل فريق حجرين في دوره حتى توضع أحجار الفريقين.</span></li>
+          <li><span class="rule-number">٢</span><span>في مرحلة الحركة، اختر حجراً ثم خانة مجاورة فارغة أفقياً أو رأسياً.</span></li>
+          <li><span class="rule-number">٣</span><span>إذا حاصرت حجراً للخصم بين حجرين لك في خط مستقيم، تأسره.</span></li>
+          <li><span class="rule-number">٤</span><span>الفوز لمن يأسر أحجار الخصم كلها أو يمنعه من أي حركة قانونية.</span></li>
+        </ol>
+        <div class="heritage-note">رقعة من ٧×٧ تمنح الأحجار مساحة للمناورة، مع ميدان وسطي محجوز. هذه نسخة رقمية مبسطة مستوحاة من لعبة السيجة السودانية.</div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>لعبة سودانية للاعبين • تعمل دون اتصال بالإنترنت • لا تحتاج إلى تثبيت أو حساب</div>
+      <p class="credits">تطوير: م. عباس الجبارة عباس • أرإكس كمبيوتر تكنولوجي • 20/11/2026</p>
+    </footer>
+  </main>
+
+  <dialog id="rules-dialog" aria-labelledby="dialog-title">
+    <h2 id="dialog-title">طريقة لعب السيجة</h2>
+    <p>يتناوب لاعبان على الجهاز نفسه. الفريق النيلي يبدأ أولاً، والأزرق والذهبي يميزان الأحجار.</p>
+    <ul>
+      <li>في التوزيع، ضع حجرين في كل دور على أي خانتين فارغتين.</li>
+      <li>بعد التوزيع، اختر حجراً ثم حرّكه خانة واحدة أفقياً أو رأسياً إلى خانة فارغة.</li>
+      <li>تأسر حجر الخصم بوضعه بين حجرين من أحجارك على خط مستقيم.</li>
+      <li>الميدان في الوسط محجوز. الفوز بأسر أحجار الخصم كلها أو سدّ جميع حركاته.</li>
+    </ul>
+    <button class="dialog-close" id="close-rules" type="button">حسناً</button>
+  </dialog>
+
+  <script>
+    "use strict";
+
+    const SIZE = 7;
+    const CENTER = { row: 3, col: 3 };
+    const PIECES = 12;
+    const DIRECTIONS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    const boardElement = document.getElementById("board");
+    const statusElement = document.getElementById("status");
+    const phaseElement = document.getElementById("phase");
+    const noteElement = document.getElementById("board-note");
+    const undoButton = document.getElementById("undo");
+
+    let game;
+    let notice = "";
+
+    function freshGame() {
+      return {
+        board: Array.from({ length: SIZE }, () => Array(SIZE).fill(0)),
+        remaining: { 1: PIECES, 2: PIECES },
+        captured: { 1: 0, 2: 0 },
+        player: 1,
+        phase: "placement",
+        placementsThisTurn: 0,
+        selected: null,
+        winner: 0,
+        history: []
+      };
+    }
+
+    function snapshot() {
+      return {
+        board: game.board.map(row => [...row]),
+        remaining: { ...game.remaining },
+        captured: { ...game.captured },
+        player: game.player,
+        phase: game.phase,
+        placementsThisTurn: game.placementsThisTurn,
+        selected: game.selected ? { ...game.selected } : null,
+        winner: game.winner
+      };
+    }
+
+    function saveHistory() {
+      game.history.push(snapshot());
+      if (game.history.length > 40) game.history.shift();
+    }
+
+    function restore(snapshotState) {
+      game = { ...snapshotState, history: game.history };
+      notice = "تم التراجع عن الحركة.";
+      render();
+    }
+
+    function isCenter(row, col) {
+      return row === CENTER.row && col === CENTER.col;
+    }
+
+    function pieceCount(player) {
+      return game.board.reduce((total, row) => total + row.filter(piece => piece === player).length, 0);
+    }
+
+    function positionKey(row, col) {
+      return `${row},${col}`;
+    }
+
+    function legalTargets(row, col) {
+      return DIRECTIONS
+        .map(([dr, dc]) => [row + dr, col + dc])
+        .filter(([nextRow, nextCol]) =>
+          nextRow >= 0 && nextRow < SIZE &&
+          nextCol >= 0 && nextCol < SIZE &&
+          !isCenter(nextRow, nextCol) &&
+          game.board[nextRow][nextCol] === 0
+        );
+    }
+
+    function hasLegalMove(player) {
+      for (let row = 0; row < SIZE; row += 1) {
+        for (let col = 0; col < SIZE; col += 1) {
+          if (game.board[row][col] === player && legalTargets(row, col).length > 0) return true;
+        }
+      }
+      return false;
+    }
+
+    function render() {
+      boardElement.replaceChildren();
+      const legal = new Set(
+        game.selected ? legalTargets(game.selected.row, game.selected.col).map(([row, col]) => positionKey(row, col)) : []
+      );
+
+      for (let row = 0; row < SIZE; row += 1) {
+        for (let col = 0; col < SIZE; col += 1) {
+          const square = document.createElement("button");
+          square.type = "button";
+          square.className = "square";
+          square.dataset.row = String(row);
+          square.dataset.col = String(col);
+          square.addEventListener("click", onSquareClick);
+
+          if (isCenter(row, col)) {
+            square.classList.add("center");
+            square.disabled = true;
+            square.setAttribute("aria-label", "الميدان الوسطي، خانة محجوزة");
+            const mark = document.createElement("span");
+            mark.className = "center-mark";
+            mark.textContent = "ميدان";
+            square.append(mark);
+          } else {
+            const piece = game.board[row][col];
+            const coordinates = `الصف ${row + 1}، العمود ${col + 1}`;
+            if (piece) {
+              const stone = document.createElement("span");
+              stone.className = `piece ${piece === 1 ? "blue" : "gold"}`;
+              stone.setAttribute("aria-hidden", "true");
+              square.append(stone);
+              square.setAttribute("aria-label", `${coordinates}: حجر ${piece === 1 ? "الفريق النيلي" : "الفريق الذهبي"}`);
+            } else {
+              square.setAttribute("aria-label", `${coordinates}: خانة فارغة`);
+            }
+
+            if (game.selected && game.selected.row === row && game.selected.col === col) {
+              square.classList.add("selected");
+              square.setAttribute("aria-pressed", "true");
+            }
+            if (legal.has(positionKey(row, col))) square.classList.add("legal");
+          }
+
+          boardElement.append(square);
+        }
+      }
+
+      const currentName = game.player === 1 ? "النيلي" : "الذهبي";
+      const phaseName = game.phase === "placement" ? "التوزيع" : "الحركة";
+      phaseElement.textContent = game.winner ? "انتهت الجولة" : `مرحلة ${phaseName}`;
+
+      if (game.winner) {
+        statusElement.textContent = `فاز الفريق ${game.winner === 1 ? "النيلي" : "الذهبي"}!`;
+      } else if (notice) {
+        statusElement.textContent = notice;
+      } else if (game.phase === "placement") {
+        statusElement.textContent = `دور الفريق ${currentName} — ضع ${Math.min(2, game.remaining[game.player])} حجر`;
+      } else {
+        statusElement.textContent = game.selected
+          ? `الفريق ${currentName} — اختر خانة مجاورة مضاءة`
+          : `دور الفريق ${currentName} — اختر حجراً للتحريك`;
+      }
+
+      document.getElementById("score-1").classList.toggle("active", !game.winner && game.player === 1);
+      document.getElementById("score-2").classList.toggle("active", !game.winner && game.player === 2);
+      document.getElementById("detail-1").textContent =
+        `متبقي ${game.remaining[1]} · أَسر ${game.captured[1]}`;
+      document.getElementById("detail-2").textContent =
+        `متبقي ${game.remaining[2]} · أَسر ${game.captured[2]}`;
+      noteElement.textContent = game.phase === "placement"
+        ? "اختر خانة فارغة لوضع الحجر — يتبادل الفريقان وضع حجرين في كل دور."
+        : "اختر حجراً من فريقك، ثم انقله إلى خانة مجاورة فارغة.";
+      undoButton.disabled = game.history.length === 0;
+    }
+
+    function onSquareClick(event) {
+      if (game.winner) return;
+      notice = "";
+      const row = Number(event.currentTarget.dataset.row);
+      const col = Number(event.currentTarget.dataset.col);
+
+      if (game.phase === "placement") {
+        if (game.board[row][col] !== 0) {
+          notice = "هذه الخانة مشغولة، اختر خانة فارغة.";
+          render();
+          return;
+        }
+
+        saveHistory();
+        game.board[row][col] = game.player;
+        game.remaining[game.player] -= 1;
+        game.placementsThisTurn += 1;
+
+        if (game.remaining[1] === 0 && game.remaining[2] === 0) {
+          game.phase = "movement";
+          game.player = 1;
+          game.placementsThisTurn = 0;
+          notice = "اكتمل التوزيع — بدأت مرحلة الحركة.";
+        } else if (game.placementsThisTurn === 2 || game.remaining[game.player] === 0) {
+          game.player = 3 - game.player;
+          game.placementsThisTurn = 0;
+        }
+        render();
+        return;
+      }
+
+      const selectedPiece = game.selected && game.board[game.selected.row][game.selected.col] === game.player;
+      if (game.board[row][col] === game.player) {
+        game.selected = selectedPiece && game.selected.row === row && game.selected.col === col
+          ? null
+          : { row, col };
+        render();
+        return;
+      }
+
+      if (!selectedPiece) {
+        notice = "اختر حجراً من فريقك أولاً.";
+        render();
+        return;
+      }
+
+      const [sourceRow, sourceCol] = [game.selected.row, game.selected.col];
+      if (!legalTargets(sourceRow, sourceCol).some(([targetRow, targetCol]) => targetRow === row && targetCol === col)) {
+        notice = "الحركة تكون إلى خانة فارغة مجاورة أفقياً أو رأسياً.";
+        render();
+        return;
+      }
+
+      saveHistory();
+      game.board[row][col] = game.player;
+      game.board[sourceRow][sourceCol] = 0;
+      game.selected = null;
+      const captured = captureAt(row, col);
+      game.captured[game.player] += captured;
+
+      const opponent = 3 - game.player;
+      if (pieceCount(opponent) === 0 || !hasLegalMove(opponent)) {
+        game.winner = game.player;
+      } else {
+        game.player = opponent;
+        notice = captured ? `أحسنت! أَسرت ${captured} ${captured === 1 ? "حجراً" : "أحجار"}.` : "";
+      }
+      render();
+    }
+
+    function captureAt(row, col) {
+      const enemy = 3 - game.player;
+      const capturedPositions = [];
+
+      for (const [dr, dc] of DIRECTIONS) {
+        const enemyRow = row + dr;
+        const enemyCol = col + dc;
+        const allyRow = row + 2 * dr;
+        const allyCol = col + 2 * dc;
+        if (
+          allyRow >= 0 && allyRow < SIZE &&
+          allyCol >= 0 && allyCol < SIZE &&
+          game.board[enemyRow][enemyCol] === enemy &&
+          game.board[allyRow][allyCol] === game.player
+        ) {
+          capturedPositions.push([enemyRow, enemyCol]);
+        }
+      }
+
+      for (const [capturedRow, capturedCol] of capturedPositions) {
+        game.board[capturedRow][capturedCol] = 0;
+      }
+      return capturedPositions.length;
+    }
+
+    document.getElementById("new-game").addEventListener("click", () => {
+      game = freshGame();
+      notice = "بدأت جولة جديدة — الفريق النيلي يبدأ.";
+      render();
+    });
+
+    undoButton.addEventListener("click", () => {
+      if (game.history.length) restore(game.history.pop());
+    });
+
+    const rulesDialog = document.getElementById("rules-dialog");
+    document.getElementById("show-rules").addEventListener("click", () => rulesDialog.showModal());
+    document.getElementById("close-rules").addEventListener("click", () => rulesDialog.close());
+    rulesDialog.addEventListener("click", event => {
+      if (event.target === rulesDialog) rulesDialog.close();
+    });
+
+    game = freshGame();
+    render();
+  </script>
+</body>
+</html>
